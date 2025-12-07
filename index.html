@@ -1,1106 +1,493 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-CN">
-
-    <script>
-// DOM 加载完成后执行
-document.addEventListener('DOMContentLoaded', function() {
-    // 加载动画
-    const loader = document.getElementById('loader');
-    setTimeout(() => {
-        loader.classList.add('hidden');
-    }, 1500);
-    
-    // 打字机效果
-    const texts = ['H5炫酷小站', '响应式设计', '交互体验'];
-    let count = 0;
-    let index = 0;
-    let currentText = '';
-    let letter = '';
-    
-    function type() {
-        if (count === texts.length) {
-            count = 0;
-        }
-        currentText = texts[count];
-        letter = currentText.slice(0, ++index);
-        
-        document.getElementById('typing-text').textContent = letter;
-        
-        if (letter.length === currentText.length) {
-            setTimeout(() => {
-                deleteText();
-            }, 1500);
-        } else {
-            setTimeout(type, 150);
-        }
-    }
-    
-    function deleteText() {
-        letter = currentText.slice(0, --index);
-        document.getElementById('typing-text').textContent = letter;
-        
-        if (letter.length === 0) {
-            count++;
-            index = 0;
-            setTimeout(type, 500);
-        } else {
-            setTimeout(deleteText, 100);
-        }
-    }
-    
-    setTimeout(type, 1000);
-    
-    // 主题切换
-    const themeToggle = document.querySelector('.theme-toggle');
-    const themeIcon = document.getElementById('theme-icon');
-    const currentTheme = localStorage.getItem('theme') || 'light';
-    
-    if (currentTheme === 'dark') {
-        document.documentElement.setAttribute('data-theme', 'dark');
-        themeIcon.classList.remove('fa-moon');
-        themeIcon.classList.add('fa-sun');
-    }
-    
-    themeToggle.addEventListener('click', function() {
-        const currentTheme = document.documentElement.getAttribute('data-theme');
-        
-        if (currentTheme === 'dark') {
-            document.documentElement.removeAttribute('data-theme');
-            localStorage.setItem('theme', 'light');
-            themeIcon.classList.remove('fa-sun');
-            themeIcon.classList.add('fa-moon');
-        } else {
-            document.documentElement.setAttribute('data-theme', 'dark');
-            localStorage.setItem('theme', 'dark');
-            themeIcon.classList.remove('fa-moon');
-            themeIcon.classList.add('fa-sun');
-        }
-    });
-    
-    // 导航栏滚动效果
-    const navbar = document.querySelector('.navbar');
-    window.addEventListener('scroll', function() {
-        if (window.scrollY > 100) {
-            navbar.style.padding = '0.5rem 0';
-            navbar.style.boxShadow = '0 5px 20px rgba(0,0,0,0.1)';
-        } else {
-            navbar.style.padding = '1rem 0';
-            navbar.style.boxShadow = '0 10px 20px rgba(0,0,0,0.1)';
-        }
-    });
-    
-    // 导航链接激活状态
-    const sections = document.querySelectorAll('section');
-    const navLinks = document.querySelectorAll('.nav-link');
-    
-    function setActiveLink() {
-        let current = '';
-        
-        sections.forEach(section => {
-            const sectionTop = section.offsetTop;
-            const sectionHeight = section.clientHeight;
-            if (scrollY >= (sectionTop - 200)) {
-                current = section.getAttribute('id');
-            }
-        });
-        
-        navLinks.forEach(link => {
-            link.classList.remove('active');
-            if (link.getAttribute('href').substring(1) === current) {
-                link.classList.add('active');
-            }
-        });
-    }
-    
-    window.addEventListener('scroll', setActiveLink);
-    
-    // 汉堡菜单
-    const hamburger = document.querySelector('.hamburger');
-    const navMenu = document.querySelector('.nav-menu');
-    
-    hamburger.addEventListener('click', function() {
-        hamburger.classList.toggle('active');
-        navMenu.classList.toggle('active');
-    });
-    
-    // 关闭移动菜单
-    document.querySelectorAll('.nav-link').forEach(n => n.addEventListener('click', () => {
-        hamburger.classList.remove('active');
-        navMenu.classList.remove('active');
-    }));
-    
-    // 返回顶部按钮
-    const backToTopBtn = document.getElementById('backToTop');
-    
-    window.addEventListener('scroll', function() {
-        if (window.scrollY > 300) {
-            backToTopBtn.style.display = 'flex';
-        } else {
-            backToTopBtn.style.display = 'none';
-        }
-    });
-    
-    backToTopBtn.addEventListener('click', function() {
-        window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
-        });
-    });
-    
-    // 联系表单提交
-    const contactForm = document.getElementById('contactForm');
-    contactForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        // 获取表单数据
-        const formData = new FormData(contactForm);
-        const data = Object.fromEntries(formData);
-        
-        // 这里可以添加实际的表单提交逻辑
-        console.log('表单数据:', data);
-        
-        // 显示成功消息
-        alert('消息发送成功！感谢你的联系。');
-        contactForm.reset();
-    });
-});
-
-// 模态框功能
-const modalImages = {
-    1: {
-        title: '现代设计',
-        desc: '采用最新的设计趋势，简洁美观的界面布局，提供最佳用户体验。'
-    },
-    2: {
-        title: '动画特效',
-        desc: '流畅的交互动画和过渡效果，让页面更加生动有趣。'
-    },
-    3: {
-        title: '移动优先',
-        desc: '完全响应式设计，在手机、平板和桌面设备上都有完美表现。'
-    }
-};
-
-function showModal(id) {
-    const modal = document.getElementById('imageModal');
-    const modalImg = document.getElementById('modalImage');
-    const modalTitle = document.getElementById('modalTitle');
-    const modalDesc = document.getElementById('modalDesc');
-    
-    modalImg.src = `https://picsum.photos/600/400?random=${id}`;
-    modalTitle.textContent = modalImages[id].title;
-    modalDesc.textContent = modalImages[id].desc;
-    
-    modal.style.display = 'flex';
-}
-
-function closeModal() {
-    document.getElementById('imageModal').style.display = 'none';
-}
-
-// 点击模态框外部关闭
-window.addEventListener('click', function(event) {
-    const modal = document.getElementById('imageModal');
-    if (event.target === modal) {
-        modal.style.display = 'none';
-    }
-});
-
-// 滚动动画
-const observerOptions = {
-    threshold: 0.1,
-    rootMargin: '0px 0px -50px 0px'
-};
-
-const observer = new IntersectionObserver(function(entries) {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.style.opacity = '1';
-            entry.target.style.transform = 'translateY(0)';
-        }
-    });
-}, observerOptions);
-
-// 观察所有需要动画的元素
-document.querySelectorAll('.feature-card, .gallery-card, .contact-item').forEach(el => {
-    el.style.opacity = '0';
-    el.style.transform = 'translateY(20px)';
-    el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-    observer.observe(el);
-});
-    </script>
-    
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>✨ H5炫酷小站</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>静态网站示例 — 单文件（HTML/CSS/JS）</title>
+  <meta name="description" content="一个示例静态单页网站，HTML/CSS/JS 都放在同一个文件里，响应式、深色模式、作品弹窗、表单校验。" />
+  <style>
+    /* ========== 变量 ========== */
+    :root{
+      --bg: #f7fbff;
+      --card: #ffffff;
+      --text: #0f1724;
+      --muted: #6b7280;
+      --accent: #2563eb;
+      --glass: rgba(255,255,255,0.6);
+      --radius: 12px;
+      --shadow: 0 6px 20px rgba(16,24,40,.08);
+      --max-width: 1100px;
+    }
+    [data-theme="dark"]{
+      --bg: #071024;
+      --card: #071833;
+      --text: #e6eef8;
+      --muted: #9fb2d9;
+      --accent: #60a5fa;
+      --glass: rgba(255,255,255,0.03);
+      --shadow: 0 6px 20px rgba(2,6,23,.6);
+    }
+
+    /* ========== 基础重置 ========== */
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background:linear-gradient(180deg, var(--bg), color-mix(in srgb, var(--bg) 85%, transparent));
+      color:var(--text);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      line-height:1.45;
+      padding:24px;
+      display:flex;
+      justify-content:center;
+    }
+
+    .container{width:100%; max-width:var(--max-width);}
+
+    /* ========== Header / Nav ========== */
+    header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      margin-bottom:28px;
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      text-decoration:none;
+      color:var(--text);
+    }
+    .logo{
+      width:48px;
+      height:48px;
+      border-radius:10px;
+      background:linear-gradient(135deg,var(--accent),#8b5cf6);
+      display:inline-grid;
+      place-items:center;
+      color:white;
+      font-weight:700;
+      box-shadow:var(--shadow);
+    }
+    nav{display:flex; gap:14px; align-items:center;}
+    nav a{
+      color:var(--muted);
+      text-decoration:none;
+      padding:8px 10px;
+      border-radius:8px;
+      font-weight:600;
+      font-size:0.95rem;
+    }
+    nav a:hover{color:var(--text); background:var(--glass)}
+    .actions{display:flex; gap:8px; align-items:center;}
+
+    /* mobile */
+    .burger{
+      display:none;
+      width:40px;
+      height:40px;
+      align-items:center;
+      justify-content:center;
+      background:transparent;
+      border-radius:8px;
+      border:none;
+      cursor:pointer;
+    }
+    .nav-mobile{
+      display:none;
+      position:relative;
+    }
+    .mobile-menu{
+      position:absolute;
+      right:0;
+      margin-top:8px;
+      background:var(--card);
+      box-shadow:var(--shadow);
+      border-radius:10px;
+      overflow:hidden;
+    }
+    .mobile-menu a{display:block; padding:12px 16px; color:var(--muted)}
+    .mobile-menu a:hover{background:var(--glass); color:var(--text)}
+
+    /* ========== Hero ========== */
+    .hero{
+      display:grid;
+      grid-template-columns:1fr 420px;
+      gap:32px;
+      align-items:center;
+      margin-bottom:36px;
+    }
+    .hero-card{
+      background:linear-gradient(180deg,var(--card), color-mix(in srgb,var(--card) 90%, transparent));
+      border-radius:var(--radius);
+      padding:28px;
+      box-shadow:var(--shadow);
+    }
+    h1{margin:0 0 10px 0; font-size:2rem}
+    p.lead{margin:0 0 18px 0; color:var(--muted)}
+    .cta{display:inline-flex; gap:10px; align-items:center; background:var(--accent); color:white; padding:10px 14px; border-radius:10px; text-decoration:none; font-weight:700}
+    .sub-cta{background:transparent; border:1px solid color-mix(in srgb,var(--accent) 20%); color:var(--accent); padding:8px 12px; border-radius:8px; text-decoration:none; font-weight:600}
+
+    /* feature grid */
+    .features{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:18px}
+    .feature{background:var(--card); padding:14px; border-radius:12px; box-shadow:var(--shadow); color:var(--text)}
+    .feature h4{margin:0 0 8px 0}
+    .feature p{margin:0; color:var(--muted); font-size:0.95rem}
+
+    /* ========== Projects ========== */
+    .projects-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin:26px 0}
+    .project{
+      border-radius:10px;
+      overflow:hidden;
+      background:linear-gradient(180deg, color-mix(in srgb,var(--accent) 8%), transparent);
+      min-height:120px;
+      display:flex;
+      align-items:end;
+      padding:12px;
+      cursor:pointer;
+      color:white;
+      box-shadow:var(--shadow);
+    }
+    .project .tag{background:rgba(0,0,0,0.25); padding:6px 8px; border-radius:8px; font-weight:700; font-size:0.9rem}
+
+    /* ========== Contact ========== */
+    .contact-card{background:var(--card); padding:20px; border-radius:12px; box-shadow:var(--shadow)}
+    form{display:grid; gap:10px}
+    input,textarea{
+      width:100%; padding:10px 12px; border-radius:8px; border:1px solid rgba(15,23,36,0.06);
+      background:transparent; color:var(--text);
+      font-size:1rem;
+    }
+    input::placeholder, textarea::placeholder{color:var(--muted)}
+    button[type="submit"]{background:var(--accent); color:white; padding:10px 14px; border-radius:10px; border:none; font-weight:700; cursor:pointer}
+
+    /* ========== Footer ========== */
+    footer{margin-top:36px; color:var(--muted); text-align:center; padding:18px 0;}
+
+    /* ========== Modal ========== */
+    .modal-backdrop{
+      position:fixed; inset:0; display:flex; align-items:center; justify-content:center;
+      background:rgba(2,6,23,0.6); z-index:80;
+    }
+    .modal{
+      width:clamp(300px, 80%, 800px);
+      background:var(--card);
+      border-radius:12px;
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+    .modal .media{height:320px; background-size:cover; background-position:center}
+    .modal .body{padding:16px}
+    .hidden{display:none}
+
+    /* ========== 小屏适配 ========== */
+    @media (max-width:900px){
+      .hero{grid-template-columns:1fr; }
+      .projects-grid{grid-template-columns:repeat(2,1fr)}
+      .features{grid-template-columns:repeat(2,1fr)}
+    }
+    @media (max-width:600px){
+      body{padding:12px;}
+      header{flex-direction:column; align-items:flex-start; gap:12px}
+      nav{display:none}
+      .burger{display:flex}
+      .nav-mobile{display:block}
+      .projects-grid{grid-template-columns:1fr}
+      .features{grid-template-columns:1fr}
+    }
+  </style>
 </head>
-    <style>/* 基础重置 */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-:root {
-    --primary-color: #4361ee;
-    --secondary-color: #3a0ca3;
-    --accent-color: #f72585;
-    --light-color: #f8f9fa;
-    --dark-color: #212529;
-    --gray-color: #6c757d;
-    --success-color: #4cc9f0;
-    --shadow: 0 10px 20px rgba(0,0,0,0.1);
-    --transition: all 0.3s ease;
-}
-
-[data-theme="dark"] {
-    --light-color: #121212;
-    --dark-color: #f8f9fa;
-    --gray-color: #adb5bd;
-    --shadow: 0 10px 20px rgba(0,0,0,0.3);
-}
-
-html {
-    scroll-behavior: smooth;
-}
-
-body {
-    font-family: 'Noto Sans SC', sans-serif;
-    background-color: var(--light-color);
-    color: var(--dark-color);
-    line-height: 1.6;
-    transition: var(--transition);
-    overflow-x: hidden;
-}
-
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
-}
-
-/* 加载动画 */
-.loader {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: var(--light-color);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-    transition: opacity 0.5s, visibility 0.5s;
-}
-
-.loader.hidden {
-    opacity: 0;
-    visibility: hidden;
-}
-
-.spinner {
-    width: 50px;
-    height: 50px;
-    border: 5px solid #ddd;
-    border-top-color: var(--primary-color);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
-
-/* 导航栏 */
-.navbar {
-    position: fixed;
-    top: 0;
-    width: 100%;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-    box-shadow: var(--shadow);
-    z-index: 1000;
-    transition: var(--transition);
-}
-
-[data-theme="dark"] .navbar {
-    background: rgba(18, 18, 18, 0.95);
-}
-
-.nav-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 2rem;
-    max-width: 1400px;
-    margin: 0 auto;
-}
-
-.logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--primary-color);
-}
-
-.logo i {
-    font-size: 1.8rem;
-}
-
-.nav-menu {
-    display: flex;
-    list-style: none;
-    gap: 2rem;
-}
-
-.nav-link {
-    text-decoration: none;
-    color: var(--dark-color);
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    transition: var(--transition);
-    padding: 8px 16px;
-    border-radius: 25px;
-}
-
-.nav-link:hover,
-.nav-link.active {
-    background: var(--primary-color);
-    color: white;
-    transform: translateY(-2px);
-}
-
-.theme-toggle {
-    cursor: pointer;
-    font-size: 1.5rem;
-    color: var(--dark-color);
-    transition: var(--transition);
-}
-
-.theme-toggle:hover {
-    transform: rotate(30deg);
-}
-
-.hamburger {
-    display: none;
-    cursor: pointer;
-}
-
-.bar {
-    display: block;
-    width: 25px;
-    height: 3px;
-    margin: 5px auto;
-    background: var(--dark-color);
-    transition: var(--transition);
-}
-
-/* 英雄区域 */
-.hero {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    position: relative;
-    padding: 100px 2rem 2rem;
-    overflow: hidden;
-}
-
-.hero-content {
-    flex: 1;
-    max-width: 600px;
-}
-
-.hero-title {
-    font-size: 3.5rem;
-    margin-bottom: 1rem;
-    line-height: 1.2;
-}
-
-.gradient-text {
-    background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
-
-.typing {
-    border-right: 3px solid var(--primary-color);
-    animation: blink 1s infinite;
-    padding-right: 5px;
-}
-
-@keyframes blink {
-    50% { border-color: transparent; }
-}
-
-.hero-subtitle {
-    font-size: 1.2rem;
-    color: var(--gray-color);
-    margin-bottom: 2rem;
-}
-
-.hero-buttons {
-    display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
-}
-
-.btn {
-    padding: 12px 30px;
-    border-radius: 50px;
-    text-decoration: none;
-    font-weight: 500;
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    transition: var(--transition);
-    border: none;
-    cursor: pointer;
-    font-size: 1rem;
-}
-
-.btn-primary {
-    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
-    color: white;
-}
-
-.btn-secondary {
-    background: transparent;
-    color: var(--primary-color);
-    border: 2px solid var(--primary-color);
-}
-
-.btn:hover {
-    transform: translateY(-3px);
-    box-shadow: var(--shadow);
-}
-
-.hero-image {
-    flex: 1;
-    position: relative;
-    height: 400px;
-}
-
-.floating-element {
-    position: absolute;
-    width: 100px;
-    height: 100px;
-    background: white;
-    border-radius: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 3rem;
-    color: var(--primary-color);
-    box-shadow: var(--shadow);
-    animation: float 6s ease-in-out infinite;
-}
-
-[data-theme="dark"] .floating-element {
-    background: #2d2d2d;
-}
-
-.floating-element:nth-child(1) {
-    top: 10%;
-    left: 10%;
-    animation-delay: 0s;
-}
-
-.floating-element:nth-child(2) {
-    top: 50%;
-    right: 15%;
-    animation-delay: 2s;
-}
-
-.floating-element:nth-child(3) {
-    bottom: 10%;
-    left: 30%;
-    animation-delay: 4s;
-}
-
-@keyframes float {
-    0%, 100% { transform: translateY(0) rotate(0); }
-    50% { transform: translateY(-20px) rotate(10deg); }
-}
-
-.scroll-indicator {
-    position: absolute;
-    bottom: 30px;
-    left: 50%;
-    transform: translateX(-50%);
-    animation: bounce 2s infinite;
-    font-size: 2rem;
-    color: var(--primary-color);
-}
-
-@keyframes bounce {
-    0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
-    40% { transform: translateX(-50%) translateY(-10px); }
-    60% { transform: translateX(-50%) translateY(-5px); }
-}
-
-/* 功能区域 */
-.section-title {
-    font-size: 2.5rem;
-    text-align: center;
-    margin-bottom: 1rem;
-}
-
-.section-subtitle {
-    text-align: center;
-    color: var(--gray-color);
-    margin-bottom: 3rem;
-}
-
-.features-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 2rem;
-    margin-top: 3rem;
-}
-
-.feature-card {
-    background: white;
-    padding: 2rem;
-    border-radius: 15px;
-    text-align: center;
-    transition: var(--transition);
-    border: 1px solid #eee;
-}
-
-[data-theme="dark"] .feature-card {
-    background: #2d2d2d;
-    border-color: #444;
-}
-
-.feature-card:hover {
-    transform: translateY(-10px);
-    box-shadow: var(--shadow);
-}
-
-.feature-icon {
-    width: 70px;
-    height: 70px;
-    background: linear-gradient(45deg, var(--primary-color), var(--success-color));
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 1.5rem;
-    font-size: 2rem;
-    color: white;
-}
-
-.feature-card h3 {
-    margin-bottom: 1rem;
-    color: var(--dark-color);
-}
-
-/* 画廊区域 */
-.gallery {
-    padding: 100px 0;
-    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-}
-
-[data-theme="dark"] .gallery {
-    background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
-}
-
-.gallery-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
-    margin-top: 3rem;
-}
-
-.gallery-card {
-    background: white;
-    border-radius: 15px;
-    overflow: hidden;
-    transition: var(--transition);
-    cursor: pointer;
-}
-
-[data-theme="dark"] .gallery-card {
-    background: #2d2d2d;
-}
-
-.gallery-card:hover {
-    transform: translateY(-10px);
-    box-shadow: var(--shadow);
-}
-
-.card-image {
-    height: 200px;
-    background-size: cover;
-    background-position: center;
-}
-
-.img1 { background: linear-gradient(45deg, #4361ee, #3a0ca3); }
-.img2 { background: linear-gradient(45deg, #f72585, #7209b7); }
-.img3 { background: linear-gradient(45deg, #4cc9f0, #4361ee); }
-
-.card-content {
-    padding: 1.5rem;
-}
-
-.card-content h3 {
-    margin-bottom: 0.5rem;
-}
-
-/* 联系区域 */
-.contact-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 3rem;
-    margin-top: 3rem;
-}
-
-.contact-info {
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-}
-
-.contact-item {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
-
-.contact-item i {
-    width: 50px;
-    height: 50px;
-    background: var(--primary-color);
-    color: white;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.2rem;
-}
-
-.contact-form {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-}
-
-.form-group input,
-.form-group textarea {
-    width: 100%;
-    padding: 15px;
-    border: 2px solid #ddd;
-    border-radius: 10px;
-    font-size: 1rem;
-    transition: var(--transition);
-    background: var(--light-color);
-    color: var(--dark-color);
-}
-
-[data-theme="dark"] .form-group input,
-[data-theme="dark"] .form-group textarea {
-    border-color: #444;
-    background: #2d2d2d;
-}
-
-.form-group input:focus,
-.form-group textarea:focus {
-    border-color: var(--primary-color);
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
-}
-
-/* 模态框 */
-.modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.8);
-    z-index: 2000;
-    justify-content: center;
-    align-items: center;
-}
-
-.modal-content {
-    background: var(--light-color);
-    padding: 2rem;
-    border-radius: 15px;
-    max-width: 600px;
-    width: 90%;
-    position: relative;
-}
-
-.modal-content img {
-    width: 100%;
-    border-radius: 10px;
-    margin-bottom: 1rem;
-}
-
-.close {
-    position: absolute;
-    top: 1rem;
-    right: 1.5rem;
-    font-size: 2rem;
-    cursor: pointer;
-    color: var(--dark-color);
-}
-
-/* 返回顶部按钮 */
-.back-to-top {
-    position: fixed;
-    bottom: 2rem;
-    right: 2rem;
-    width: 50px;
-    height: 50px;
-    background: var(--primary-color);
-    color: white;
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
-    display: none;
-    justify-content: center;
-    align-items: center;
-    font-size: 1.2rem;
-    transition: var(--transition);
-    z-index: 1000;
-}
-
-.back-to-top:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--shadow);
-}
-
-/* 页脚 */
-.footer {
-    background: var(--dark-color);
-    color: var(--light-color);
-    padding: 3rem 0;
-    text-align: center;
-}
-
-[data-theme="dark"] .footer {
-    background: #1a1a1a;
-}
-
-.footer-logo {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
-}
-
-.footer-text {
-    margin-bottom: 2rem;
-    color: #aaa;
-}
-
-.social-links {
-    display: flex;
-    justify-content: center;
-    gap: 1.5rem;
-}
-
-.social-links a {
-    color: white;
-    font-size: 1.5rem;
-    transition: var(--transition);
-}
-
-.social-links a:hover {
-    color: var(--primary-color);
-    transform: translateY(-5px);
-}
-
-/* 响应式设计 */
-@media (max-width: 768px) {
-    .hamburger {
-        display: block;
-    }
-    
-    .nav-menu {
-        position: fixed;
-        left: -100%;
-        top: 70px;
-        flex-direction: column;
-        background: var(--light-color);
-        width: 100%;
-        text-align: center;
-        transition: 0.3s;
-        box-shadow: 0 10px 27px rgba(0,0,0,0.05);
-        padding: 2rem 0;
-    }
-    
-    .nav-menu.active {
-        left: 0;
-    }
-    
-    .hero {
-        flex-direction: column;
-        text-align: center;
-    }
-    
-    .hero-title {
-        font-size: 2.5rem;
-    }
-    
-    .hero-buttons {
-        justify-content: center;
-    }
-    
-    .features-grid,
-    .gallery-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .hero-image {
-        display: none;
-    }
-}
-    </sytle>
 <body>
-    <!-- 加载动画 -->
-    <div class="loader" id="loader">
-        <div class="spinner"></div>
-    </div>
-
-    <!-- 导航栏 -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="logo">
-                <i class="fas fa-rocket"></i>
-                <span>H5小站</span>
-            </div>
-            <ul class="nav-menu">
-                <li><a href="#home" class="nav-link active"><i class="fas fa-home"></i> 首页</a></li>
-                <li><a href="#features" class="nav-link"><i class="fas fa-star"></i> 功能</a></li>
-                <li><a href="#gallery" class="nav-link"><i class="fas fa-images"></i> 画廊</a></li>
-                <li><a href="#contact" class="nav-link"><i class="fas fa-envelope"></i> 联系</a></li>
-            </ul>
-            <div class="theme-toggle">
-                <i class="fas fa-moon" id="theme-icon"></i>
-            </div>
-            <div class="hamburger">
-                <span class="bar"></span>
-                <span class="bar"></span>
-                <span class="bar"></span>
-            </div>
+  <div class="container" id="page">
+    <header>
+      <a class="brand" href="#">
+        <span class="logo" aria-hidden="true">S</span>
+        <div>
+          <div style="font-weight:800">静态示例</div>
+          <div style="font-size:0.85rem; color:var(--muted)">单文件：HTML + CSS + JS</div>
         </div>
-    </nav>
+      </a>
 
-    <!-- 主内容 -->
+      <nav aria-label="主导航">
+        <a href="#hero">首页</a>
+        <a href="#about">关于</a>
+        <a href="#projects">作品</a>
+        <a href="#contact">联系</a>
+      </nav>
+
+      <div class="actions">
+        <button id="themeToggle" aria-label="切换深色模式" title="切换深色模式">🌙</button>
+        <div class="nav-mobile">
+          <button class="burger" id="burgerBtn" aria-label="打开菜单">☰</button>
+          <div class="mobile-menu hidden" id="mobileMenu" role="menu" aria-hidden="true">
+            <a href="#hero">首页</a>
+            <a href="#about">关于</a>
+            <a href="#projects">作品</a>
+            <a href="#contact">联系</a>
+          </div>
+        </div>
+      </div>
+    </header>
+
     <main>
-        <!-- 英雄区域 -->
-        <section class="hero" id="home">
-            <div class="hero-content">
-                <h1 class="hero-title">
-                    <span class="gradient-text">欢迎来到</span>
-                    <br>
-                    <span class="typing" id="typing-text"></span>
-                </h1>
-                <p class="hero-subtitle">一个现代、响应式的H5页面展示</p>
-                <div class="hero-buttons">
-                    <a href="#features" class="btn btn-primary">
-                        <i class="fas fa-play-circle"></i> 开始探索
-                    </a>
-                    <a href="#contact" class="btn btn-secondary">
-                        <i class="fas fa-download"></i> 了解更多
-                    </a>
-                </div>
-            </div>
-            <div class="hero-image">
-                <div class="floating-element">
-                    <i class="fas fa-mobile-alt"></i>
-                </div>
-                <div class="floating-element">
-                    <i class="fas fa-code"></i>
-                </div>
-                <div class="floating-element">
-                    <i class="fas fa-palette"></i>
-                </div>
-            </div>
-            <div class="scroll-indicator">
-                <i class="fas fa-chevron-down"></i>
-            </div>
-        </section>
+      <section id="hero" class="hero">
+        <div class="hero-card">
+          <h1>漂亮、响应式的静态网站（单文件）</h1>
+          <p class="lead">这是一个示例静态单页网站，所有 HTML、CSS 和 JavaScript 放在同一个文件里，便于快速原型、演示或部署到 GitHub Pages。</p>
+          <div style="display:flex; gap:12px; align-items:center">
+            <a class="cta" href="#contact">开始合作</a>
+            <a class="sub-cta" href="#projects">查看作品</a>
+          </div>
 
-        <!-- 功能区域 -->
-        <section class="features" id="features">
-            <div class="container">
-                <h2 class="section-title">核心功能</h2>
-                <p class="section-subtitle">探索这个H5页面的所有特色</p>
-                
-                <div class="features-grid">
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="fas fa-mobile-alt"></i>
-                        </div>
-                        <h3>响应式设计</h3>
-                        <p>完美适配手机、平板和桌面设备，提供最佳浏览体验</p>
-                    </div>
-                    
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="fas fa-bolt"></i>
-                        </div>
-                        <h3>快速加载</h3>
-                        <p>优化性能，确保页面快速加载，提升用户体验</p>
-                    </div>
-                    
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="fas fa-palette"></i>
-                        </div>
-                        <h3>主题切换</h3>
-                        <p>支持深色/浅色模式，根据喜好自定义界面</p>
-                    </div>
-                    
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="fas fa-hand-pointer"></i>
-                        </div>
-                        <h3>交互丰富</h3>
-                        <p>多种动画和交云效果，让页面生动有趣</p>
-                    </div>
-                </div>
+          <div class="features" aria-hidden="false">
+            <div class="feature">
+              <h4>响应式</h4>
+              <p>在手机、平板和桌面上都能良好展示。</p>
             </div>
-        </section>
+            <div class="feature">
+              <h4>深色模式</h4>
+              <p>支持深浅两种主题，用户首选项会被记住。</p>
+            </div>
+            <div class="feature">
+              <h4>无后端表单</h4>
+              <p>表单前端验证，演示提交成功（实际发送需接后端）。</p>
+            </div>
+          </div>
+        </div>
 
-        <!-- 画廊区域 -->
-        <section class="gallery" id="gallery">
-            <div class="container">
-                <h2 class="section-title">作品展示</h2>
-                <p class="section-subtitle">点击卡片查看效果</p>
-                
-                <div class="gallery-grid">
-                    <div class="gallery-card" onclick="showModal(1)">
-                        <div class="card-image img1"></div>
-                        <div class="card-content">
-                            <h3>现代设计</h3>
-                            <p>简洁美观的界面布局</p>
-                        </div>
-                    </div>
-                    
-                    <div class="gallery-card" onclick="showModal(2)">
-                        <div class="card-image img2"></div>
-                        <div class="card-content">
-                            <h3>动画特效</h3>
-                            <p>流畅的交互动画</p>
-                        </div>
-                    </div>
-                    
-                    <div class="gallery-card" onclick="showModal(3)">
-                        <div class="card-image img3"></div>
-                        <div class="card-content">
-                            <h3>移动优先</h3>
-                            <p>完美的移动端体验</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+        <div>
+          <div style="background:var(--card); padding:18px; border-radius:var(--radius); box-shadow:var(--shadow);">
+            <h3 style="margin-top:0">快速说明</h3>
+            <ul style="color:var(--muted); padding-left:18px; margin:10px 0">
+              <li>保存为 index.html 并打开即可运行。</li>
+              <li>可直接部署为静态站点（如 GitHub Pages）。</li>
+              <li>需要多页或后端功能我可以继续帮你扩展。</li>
+            </ul>
+          </div>
+        </div>
+      </section>
 
-        <!-- 联系区域 -->
-        <section class="contact" id="contact">
-            <div class="container">
-                <h2 class="section-title">联系我们</h2>
-                <p class="section-subtitle">有什么想法？欢迎交流！</p>
-                
-                <div class="contact-grid">
-                    <div class="contact-info">
-                        <div class="contact-item">
-                            <i class="fas fa-envelope"></i>
-                            <div>
-                                <h3>邮箱</h3>
-                                <p>contact@example.com</p>
-                            </div>
-                        </div>
-                        <div class="contact-item">
-                            <i class="fas fa-phone"></i>
-                            <div>
-                                <h3>电话</h3>
-                                <p>+86 138 0000 0000</p>
-                            </div>
-                        </div>
-                        <div class="contact-item">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <div>
-                                <h3>地址</h3>
-                                <p>中国 · 上海</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <form class="contact-form" id="contactForm">
-                        <div class="form-group">
-                            <input type="text" placeholder="你的姓名" required>
-                        </div>
-                        <div class="form-group">
-                            <input type="email" placeholder="邮箱地址" required>
-                        </div>
-                        <div class="form-group">
-                            <textarea placeholder="你的消息..." rows="4" required></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-paper-plane"></i> 发送消息
-                        </button>
-                    </form>
-                </div>
+      <section id="about" style="margin-bottom:28px">
+        <div class="hero-card">
+          <h2>关于这个示例</h2>
+          <p style="color:var(--muted)">本页面展示常见静态网站组件：导航、英雄区、功能卡片、作品网格、弹窗预览与联系表单。所有代码放在同一文件里，便于分享与快速修改。</p>
+        </div>
+      </section>
+
+      <section id="projects">
+        <h2 style="margin-bottom:12px">作品集</h2>
+        <div class="projects-grid" aria-live="polite">
+          <div class="project" data-title="项目 A" data-desc="这是项目 A 的描述。" data-img="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1200&q=60">
+            <div class="tag">项目 A</div>
+          </div>
+          <div class="project" data-title="项目 B" data-desc="这是项目 B 的描述。" data-img="https://images.unsplash.com/photo-1527689368864-3a821dbccc34?auto=format&fit=crop&w=1200&q=60">
+            <div class="tag">项目 B</div>
+          </div>
+          <div class="project" data-title="项目 C" data-desc="这是项目 C 的描述。" data-img="https://images.unsplash.com/photo-1506765515384-028b60a970df?auto=format&fit=crop&w=1200&q=60">
+            <div class="tag">项目 C</div>
+          </div>
+          <div class="project" data-title="项目 D" data-desc="这是项目 D 的描述。" data-img="https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&w=1200&q=60">
+            <div class="tag">项目 D</div>
+          </div>
+          <div class="project" data-title="项目 E" data-desc="这是项目 E 的描述。" data-img="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1200&q=60">
+            <div class="tag">项目 E</div>
+          </div>
+          <div class="project" data-title="项目 F" data-desc="这是项目 F 的描述。" data-img="https://images.unsplash.com/photo-1509395176047-4a66953fd231?auto=format&fit=crop&w=1200&q=60">
+            <div class="tag">项目 F</div>
+          </div>
+        </div>
+      </section>
+
+      <section id="contact" style="margin-bottom:28px">
+        <h2>联系我</h2>
+        <div class="contact-card">
+          <form id="contactForm" novalidate>
+            <label>
+              <div style="font-weight:700">姓名</div>
+              <input type="text" name="name" id="name" required placeholder="你的名字" />
+            </label>
+            <label>
+              <div style="font-weight:700">邮箱</div>
+              <input type="email" name="email" id="email" required placeholder="you@example.com" />
+            </label>
+            <label>
+              <div style="font-weight:700">内容</div>
+              <textarea name="message" id="message" rows="5" required placeholder="你想说的..."></textarea>
+            </label>
+            <div style="display:flex; gap:10px; align-items:center;">
+              <button type="submit">发送（演示）</button>
+              <div id="formStatus" style="color:var(--muted)"></div>
             </div>
-        </section>
+          </form>
+        </div>
+      </section>
     </main>
 
-    <!-- 模态框 -->
-    <div class="modal" id="imageModal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
-            <img id="modalImage" src="" alt="预览">
-            <div class="modal-text">
-                <h3 id="modalTitle"></h3>
-                <p id="modalDesc"></p>
-            </div>
-        </div>
-    </div>
-
-    <!-- 返回顶部按钮 -->
-    <button class="back-to-top" id="backToTop">
-        <i class="fas fa-arrow-up"></i>
-    </button>
-
-    <!-- 页脚 -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-logo">
-                    <i class="fas fa-rocket"></i>
-                    <span>H5小站</span>
-                </div>
-                <p class="footer-text">© 2023 H5炫酷小站. 使用HTML5、CSS3和JavaScript构建</p>
-                <div class="social-links">
-                    <a href="#"><i class="fab fa-github"></i></a>
-                    <a href="#"><i class="fab fa-weixin"></i></a>
-                    <a href="#"><i class="fab fa-weibo"></i></a>
-                    <a href="#"><i class="fab fa-qq"></i></a>
-                </div>
-            </div>
-        </div>
+    <footer>
+      © <span id="year"></span> 静态示例 — 保存为 index.html 后即可部署。需要自定义内容或多页站点告诉我你的想法。
     </footer>
+  </div>
 
-    <!-- 脚本 -->
-    <script src="script.js"></script>
+  <!-- 模态弹窗 -->
+  <div id="modalWrap" class="hidden" aria-hidden="true">
+    <div class="modal-backdrop" id="modalBackdrop">
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <div class="media" id="modalImage" style="background-color:#111"></div>
+        <div class="body">
+          <h3 id="modalTitle">标题</h3>
+          <p id="modalDesc" style="color:var(--muted)"></p>
+          <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:10px">
+            <button id="closeModal" style="padding:8px 12px; border-radius:8px; border:none; background:rgba(0,0,0,0.06); cursor:pointer">关闭</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ========== 简单脚本：导航、移动菜单、主题、作品弹窗、表单验证 ==========
+    (function(){
+      // 元素
+      const burgerBtn = document.getElementById('burgerBtn');
+      const mobileMenu = document.getElementById('mobileMenu');
+      const themeToggle = document.getElementById('themeToggle');
+      const page = document.getElementById('page');
+      const projects = document.querySelectorAll('.project');
+      const modalWrap = document.getElementById('modalWrap');
+      const modalBackdrop = document.getElementById('modalBackdrop');
+      const modalImage = document.getElementById('modalImage');
+      const modalTitle = document.getElementById('modalTitle');
+      const modalDesc = document.getElementById('modalDesc');
+      const closeModal = document.getElementById('closeModal');
+      const form = document.getElementById('contactForm');
+      const formStatus = document.getElementById('formStatus');
+      const year = document.getElementById('year');
+
+      // 设置年份
+      year.textContent = new Date().getFullYear();
+
+      // 移动菜单切换
+      if(burgerBtn){
+        burgerBtn.addEventListener('click', ()=> {
+          mobileMenu.classList.toggle('hidden');
+          const hidden = mobileMenu.classList.contains('hidden');
+          mobileMenu.setAttribute('aria-hidden', hidden ? 'true' : 'false');
+        });
+      }
+
+      // 平滑滚动（适用于所有锚点链接）
+      document.querySelectorAll('a[href^="#"]').forEach(a=>{
+        a.addEventListener('click', function(e){
+          const target = document.querySelector(this.getAttribute('href'));
+          if(target){
+            e.preventDefault();
+            target.scrollIntoView({behavior:'smooth', block:'start'});
+            // 隐藏移动菜单（小屏）
+            if(!mobileMenu.classList.contains('hidden')){
+              mobileMenu.classList.add('hidden');
+              mobileMenu.setAttribute('aria-hidden','true');
+            }
+          }
+        });
+      });
+
+      // 主题：使用 data-theme 放在 body 之上，并存储到 localStorage
+      const root = document.documentElement;
+      const THEME_KEY = 'example_site_theme';
+      function applyTheme(theme){
+        if(theme === 'dark'){
+          root.setAttribute('data-theme','dark');
+          themeToggle.textContent = '☀️';
+        } else {
+          root.removeAttribute('data-theme');
+          themeToggle.textContent = '🌙';
+        }
+      }
+      // 初始化
+      const saved = localStorage.getItem(THEME_KEY);
+      if(saved) applyTheme(saved);
+      else {
+        // 根据系统偏好初始化
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        applyTheme(prefersDark ? 'dark' : 'light');
+      }
+      themeToggle.addEventListener('click', ()=>{
+        const isDark = root.getAttribute('data-theme') === 'dark';
+        const next = isDark ? 'light' : 'dark';
+        applyTheme(next);
+        localStorage.setItem(THEME_KEY, next);
+      });
+
+      // 项目弹窗
+      projects.forEach(p=>{
+        p.addEventListener('click', ()=>{
+          const title = p.getAttribute('data-title') || '作品';
+          const desc = p.getAttribute('data-desc') || '';
+          const img = p.getAttribute('data-img') || '';
+          modalTitle.textContent = title;
+          modalDesc.textContent = desc;
+          if(img){
+            modalImage.style.backgroundImage = 'url("'+img+'")';
+            modalImage.style.backgroundColor = 'transparent';
+          } else {
+            modalImage.style.backgroundImage = 'none';
+            modalImage.style.backgroundColor = '#111';
+          }
+          modalWrap.classList.remove('hidden');
+          modalWrap.setAttribute('aria-hidden','false');
+        });
+      });
+      function closeProjectModal(){
+        modalWrap.classList.add('hidden');
+        modalWrap.setAttribute('aria-hidden','true');
+      }
+      closeModal.addEventListener('click', closeProjectModal);
+      modalBackdrop.addEventListener('click', function(e){
+        if(e.target === modalBackdrop) closeProjectModal();
+      });
+      document.addEventListener('keydown', function(e){
+        if(e.key === 'Escape' && !modalWrap.classList.contains('hidden')) closeProjectModal();
+      });
+
+      // 表单：前端校验并模拟提交（演示）
+      form.addEventListener('submit', function(e){
+        e.preventDefault();
+        formStatus.textContent = '';
+        const name = form.name.value.trim();
+        const email = form.email.value.trim();
+        const message = form.message.value.trim();
+        if(!name || !email || !message){
+          formStatus.textContent = '请填写所有字段。';
+          return;
+        }
+        // 简单邮箱正则
+        const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if(!emailRe.test(email)){
+          formStatus.textContent = '请输入有效邮箱地址。';
+          return;
+        }
+        // 模拟提交延迟
+        formStatus.textContent = '正在发送...';
+        setTimeout(()=>{
+          formStatus.textContent = '发送成功（这是前端演示；若要真正发送，请配置后端或使用服务如 Formspree）。';
+          form.reset();
+        }, 900);
+      });
+
+      // 可选：防止孤立焦点穿透（简单处理）
+      document.addEventListener('focusin', function(e){
+        // 如果弹窗打开，且焦点在页内其他元素，转回弹窗的第一个可聚焦
+        if(!modalWrap.classList.contains('hidden')){
+          if(!modalWrap.contains(e.target)){
+            closeModal.focus();
+            e.preventDefault();
+          }
+        }
+      });
+    })();
+  </script>
 </body>
 </html>
